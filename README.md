@@ -58,7 +58,7 @@ else:
 <strong>Atributos:</strong>
 
 <strong><code>self.cpf</code>:</strong> Recebe o valor do CPF inserido(Deve ser do tipo ```str```) <br>
-<strong><code>=self.cpf_formated</code>:</strong> Armazena o CPF formatado. Caso o CPF seja inválido recebe o valor ```None```
+<strong><code>self.cpf_formated</code>:</strong> Armazena o CPF formatado. Caso o CPF seja inválido recebe o valor ```None```
 
 
 <small>Você pode encontrar mais exemplos do uso da classe na pasta ```exemplos```. </small>
