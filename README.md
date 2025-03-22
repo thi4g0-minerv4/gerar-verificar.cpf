@@ -6,7 +6,6 @@
 Classe CPFValida, que recebe um único parâmetro, sendo o CPF. Dentro da classe temos dois métodos: ```verificar_cpf()```, que retorna True caso o CPF seja válido e ```estado_emitido()```, que retorna um array com os estados aonde o CPF pode ter sido emitido. 
 
 ## Importação 🔃
-
 Importe da seguinte forma:
 
 ```bash
