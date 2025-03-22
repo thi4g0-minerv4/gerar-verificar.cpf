@@ -11,7 +11,7 @@ from CPFValidaClass import CPFValida
 meu_cpf = CPFValida('54705438892')
 
 # verificar_cpf(justify: bool) -> Retorna True se o CPF for válido, False caso contrário
-if meu_cpf.verificar_cpf(justify=True): # justify: bool (envia o motivo do erro, caso seja válido envia 'Tudo certo com o CPF'. O valor padrão é False)
+if meu_cpf.verificar_cpf(justify=True): # justify: bool (envia o motivo da invalidação, caso seja válido envia uma mensagem de confirmação. O valor padrão é False)
     print(f'CPF {meu_cpf.cpf} válido')
 else:
     print('CPF inválido')
