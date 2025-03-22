@@ -11,7 +11,6 @@ Importe da seguinte forma:
 ```bash
 from CPFValidaClass import CPFValida
 ```
-<br>
 
 #
 ### 💻 Uso: 
