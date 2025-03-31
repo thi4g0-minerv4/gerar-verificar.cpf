@@ -134,7 +134,3 @@ print(f'O CPF gerado é válido? {cpf_tool.verificar_cpf(cpf=novo_cpf)}')  # Sem
 <br>
 
 <small>Você pode encontrar mais exemplos do uso da classe na pasta ```exemplos```. Como: gerador infinito de CPFs, programa básico de verificação e o código e a documentação do uso da classe. </small>
-
-#
-
-### Funcionamento 🤷‍♂️
