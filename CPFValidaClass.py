@@ -1,30 +1,53 @@
+import random ## Para gerar CPF aleatorio 
+
 ## CLASSE
 class CPFValida:
 
-    def __init__(self, cpf: str):
+    def __init__(self, cpf: str = None):
         self.cpf = cpf
-        self.cpf_formated = self.__cpf_format()
+        if not cpf == None:
+            self.cpf_valido = self.verificar_cpf()
+            self.cpf_formated = self.formatar_cpf()
+            self.estados = self.estado_emitido()
+        else:
+            self.cpf_valido = None
+            self.cpf_formated = None
+            self.estados = None
 
-    def verificar_cpf(self, justify: bool = False):
+    def gerar_cpf(self):
+        ## Gera um CPF de 11 digitos
+        cpf = []
+        for x in range(11):
+            cpf.append(str(random.randint(0,9)))
+        cpf = ''.join(cpf)
+        # Verifica se ele é válido
+        cpf_class = CPFValida(cpf)
+        if cpf_class.verificar_cpf():
+            return cpf
+        else:
+            return self.gerar_cpf()
+
+
+    def verificar_cpf(self, cpf: str = None, justify: bool = False):
+
+        if cpf == None:
+            cpf = self.cpf
         ## VERIFICAÇÃO CARACTERES INVALIDOS (a-z)
-        for char in self.cpf:
+        for char in cpf:
             if not char.isdigit() and char not in ['-', '.']:
                 if justify:
                     print('O CPF possui caracteres inválidos.')
                 return False      
             
         ## ANALISA O FORMATO DO CPF, E SE NECESSARIO FORMATA PARA APENAS NUMEROS
-        if self.cpf.isdigit():
-            cpf = self.cpf
-            pass # Passa para proxima etapa de verificação
-        else:
-            if len(self.cpf) != 14: # Precisa possuir a estrutura 000.000.000-00 aqui
+        if not cpf.isdigit():
+            if len(cpf) != 14: # Precisa possuir a estrutura 000.000.000-00 aqui
                 if justify:
                     print('Formato do CPF é inválido.')
                 return False
             ## FORMATA CPF PARA A OTIMIZAÇAO DO RESTANTE DA VERIFICAÇÃO
-            if self.cpf[3]== '.' and self.cpf[7]== '.' and self.cpf[11]== '-': 
-                cpf = self.cpf.replace('.', '').replace('-','') # Cria nova variável exclusiva para a verificação, sem modificar a original
+            if cpf[3]== '.' and cpf[7]== '.' and cpf[11]== '-': 
+                cpf = cpf.replace('.', '').replace('-','') # Cria nova variável exclusiva para a verificação, sem modificar a original
             else:
                 if justify:
                     print('Formato do CPF é inválido.')
@@ -35,6 +58,12 @@ class CPFValida:
             if justify:
                 print('Um CPF válido deve ter 11 digitos (Não inclui caracteres especiais: . e -).')
             return False 
+        
+        if cpf in ["00000000000", "11111111111", "22222222222", "33333333333", "44444444444", "55555555555", "66666666666", "77777777777", "88888888888", "99999999999"]:
+            if justify:
+                print('CPF inválido. Um CPF válido não pode ser composto por números repetidos.')
+            return False
+
         ## DIVIDE O CPF EM PARTES PARA REALIZAR O CALCULO
         verificadores = list(cpf[9:])
         numeros_calculo = list(cpf[:9])
@@ -58,21 +87,21 @@ class CPFValida:
             return False
 
         if justify:
-            print(f'Tudo certo com o CPF: {self.cpf_formated}')
+            print(f'Tudo certo com o CPF: {self.formatar_cpf(cpf=cpf)}')
         return True
 
-
-    def estado_emitido(self, siglas: bool = True):
+    def estado_emitido(self, cpf: str =None, siglas: bool = True):
+        if cpf == None:
+            cpf = self.cpf
         ## Verifica o CPF, caso seja inválido retorna None
-        if not self.verificar_cpf():
+        if not self.verificar_cpf(cpf):
+            return None
         
         ## Formata o CPF para verificar o estado de forma mais otimizada
-        if self.cpf.isdigit():
-            cpf = self.cpf
-            pass 
-        else:
-            cpf = self.cpf.replace('.', '').replace('-','')
+        if not cpf.isdigit():
+            cpf = cpf.replace('.', '').replace('-','')
 
+        # Estados
         if siglas:
             estados = {
                 '1': ['DF', 'GO', 'MS', 'MT', 'TO'],
@@ -102,16 +131,19 @@ class CPFValida:
 
         return estados.get(cpf[8])
 
-    def __cpf_format(self):
-        if self.cpf.isdigit():
-            if self.verificar_cpf():
-                format_cpf = f'{self.cpf[:3]}.{self.cpf[3: 6:]}.{self.cpf[6: 9:]}-{self.cpf[9:]}'
+
+    def formatar_cpf(self, cpf: str = None):
+        if cpf == None:
+            cpf = self.cpf
+        if cpf.isdigit():
+            if self.verificar_cpf(cpf):
+                format_cpf = f'{cpf[:3]}.{cpf[3: 6:]}.{cpf[6: 9:]}-{cpf[9:]}'
                 return format_cpf
             else:
                 return None
         else:
             if self.verificar_cpf():
-                return self.cpf
+                return cpf
             else:
                 return None
     

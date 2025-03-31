@@ -1,4 +1,4 @@
-#  Verificar CPF e Retornar Estados com Python 🪪
+#  Gerar e Validar CPF com Python 🪪 (e mais)
 
 
 ## Descrição 📍
@@ -66,3 +66,6 @@ else:
 
 <small>Você pode encontrar mais exemplos do uso da classe na pasta ```exemplos```. </small>
 
+#
+
+### Funcionamento 🤷‍♂️

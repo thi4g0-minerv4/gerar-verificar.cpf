@@ -1,29 +1,69 @@
-## Importação da classe----
+# ---------------------- importando a classe ---------------------- #
 import sys
 import os.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 from CPFValidaClass import CPFValida
-## Importação da classe----
 
-# Uso da classe CPFValida
+# ----------------------| CPFVALIDA |---------------------- #
 
-# Criar uma instância (Argumento único: CPF)
-meu_cpf = CPFValida('54705438892')
+# criando uma instância
+meu_cpf = CPFValida(cpf='54705438832')
 
-# verificar_cpf(justify: bool) -> Retorna True se o CPF for válido, False caso contrário
-if meu_cpf.verificar_cpf(justify=True): # justify: bool (envia o motivo da invalidação, caso seja válido envia uma mensagem de confirmação. O valor padrão é False)
-    print(f'CPF {meu_cpf.cpf} válido')
+# ---------------------- atributos classe ---------------------- #
+"""
+Os atributos são gerados automaticamente pelo metódo construtor.
+Os atributos refletem informações que podem ser obtidas pelos metódos da classe.
+Caso o parametro cpf não seja passado retornam None.
+"""
+print(meu_cpf.cpf)             # 54705438892 -> CPF passado
+print(meu_cpf.cpf_formated)    # 547.054.388-92 -> CPF formatado
+print(meu_cpf.cpf_valido)      # True -> Se o CPF é válido ou não
+print(meu_cpf.estados)         # ['SP'] -> Array com os possíveis estados de emissão
+
+# ---------------------- métodos classe  ---------------------- #
+
+cpf_tool = CPFValida()
+
+# --- método: formatar_cpf() ---
+"""
+formatar_cpf(cpf: str) -> str 
+
+-cpf (str): CPF a ser formatado (Só aceita CPF's válidos. Padrão: self.cpf).
+"""
+cpf = '56008293703'
+print(cpf_tool.formatar_cpf(cpf)) # 560.082.937-03
+
+
+# --- método: verificar_cpf() ---
+"""
+verificar_cpf(cpf: str, justify: bool = False) -> bool
+
+-cpf (str): CPF a ser verificado (Padrão: self.cpf).
+-justify (bool): Se True, retorna a justificativa da validade/invalidez. (Padrão: False.)
+"""
+cpf = '54705438892'
+if cpf_tool.verificar_cpf(cpf=cpf, justify=True):
+    print(f'CPF {cpf_tool.formatar_cpf(cpf)} válido')
 else:
-    print('CPF inválido')
+    print(f'CPF {cpf_tool.formatar_cpf(cpf)} inválido')
 
 
-# O CPF formatado fica salvo no atributo cpf_formated
-print(meu_cpf.cpf_formated)
+# --- método: estado_emitido() ---
+"""
+estado_emitido(cpf: str, siglas: bool = True) -> list
 
-# estado_emitido(siglas: bool) -> Retorna uma lista com os estados possíveis onde o CPF pode ter sido emitido.
-estados = meu_cpf.estado_emitido(siglas=True) # siglas: bool (Caso True retorna as siglas dos estados, caso False, retorna o nome dos estados. O valor padrão é True)
-# print(estados) # Retornará ['SP']
-if 'SP' in estados:
-    print('Seu CPF foi emitido no estado de São Paulo')
-else:
-    pass
+-cpf (str): CPF cujo estado de emissão será identificado. (Só aceita CPF's válidos. Padrão: self.cpf)
+-siglas (bool): Se True, retorna a sigla do estado. Se False, retorna o nome completo. (Padrão: True.)
+"""
+estados = cpf_tool.estado_emitido(cpf=cpf, siglas=False)
+print(f'Possível estado de emissão: {', '.join(estados)}')  # ['São Paulo']
+
+# --- método: gerar_cpf() ---
+"""
+gerar_cpf() -> str
+
+Gera e retorna um CPF válido aleatório.
+"""
+novo_cpf = cpf_tool.gerar_cpf()
+print(f'CPF gerado: {novo_cpf}')
+print(f'O CPF gerado é válido? {cpf_tool.verificar_cpf(cpf=novo_cpf)}')  # Sempre True
