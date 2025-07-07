@@ -147,3 +147,10 @@ print(f'O CPF gerado é válido? {cpf_tool.verificar_cpf(cpf=novo_cpf)}')  # Sem
 <br>
 
 - **Processamento baseado apenas no CPF numérico:** toda lógica agora utiliza o atributo `cpf` puro (somente números), o que torna a execução mais rápida e tolerante a CPFs mal formatados, como `276..830.630---45` (ainda válidos após limpeza).
+
+
+## Próximas Versões
+
+- **Parametro para validar ou não CPFs fantasias (mas matemáticamente válidos)** Ex: 12345678909
+- **Classes CNHValida CNPJValida**
+- **Publicar no PyPI**
