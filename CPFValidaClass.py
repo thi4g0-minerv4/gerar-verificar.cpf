@@ -1,107 +1,66 @@
-import random ## Para gerar CPF aleatorio 
+import random ## PARA gerar_cpf()
 
-## CLASSE
+## CLASSE CPF VALIDA
 class CPFValida:
 
     def __init__(self, cpf: str = None):
-        self.cpf = cpf
-        if not cpf == None:
-            self.cpf_valido = self.verificar_cpf()
-            self.cpf_formated = self.formatar_cpf()
-            self.estados = self.estado_emitido()
+
+        self.cpf_input = cpf
+        
+        if cpf:
+            self.cpf = self.__clear_cpf(self.cpf_input) ## ATRIBUTO PRINCIPAL
+
+            self.cpf_valido = self.verificar_cpf(self.cpf)
+            self.cpf_formatado = self.formatar_cpf(self.cpf)
+            self.estados = self.estado_emitido(self.cpf)
         else:
+            self.cpf = None
             self.cpf_valido = None
-            self.cpf_formated = None
+            self.cpf_formatado = None
             self.estados = None
 
-    def gerar_cpf(self):
-        ## Gera um CPF de 11 digitos
-        cpf = []
-        for x in range(11):
-            cpf.append(str(random.randint(0,9)))
-        cpf = ''.join(cpf)
-        # Verifica se ele é válido
-        cpf_class = CPFValida(cpf)
-        if cpf_class.verificar_cpf():
-            return cpf
-        else:
-            return self.gerar_cpf()
+    def gerar_cpf(self) -> str:
 
+        numeros =[random.randint(0,9) for _ in range(9)] ## GERA PRIMEIRO 9 NÚMEROS
 
-    def verificar_cpf(self, cpf: str = None, justify: bool = False):
+        primeiro_comparador = self.__calcular_comparador(numeros) ## CALCULA 10° COM BASE NELES
+        numeros.append(primeiro_comparador)
 
-        if cpf == None:
-            cpf = self.cpf
-        ## VERIFICAÇÃO CARACTERES INVALIDOS (a-z)
-        for char in cpf:
-            if not char.isdigit() and char not in ['-', '.']:
-                if justify:
-                    print('O CPF possui caracteres inválidos.')
-                return False      
+        segundo_comparador = self.__calcular_comparador(numeros) ## CALCULA 11° COM BASE NELES
+        numeros.append(segundo_comparador)
+        return ''.join(map(str, numeros))
+
+    def verificar_cpf(self, cpf: str = None) -> bool:
+
+        cpf = self.__clear_cpf(cpf or self.cpf)
+
+        if not cpf.isdigit(): return False  ## VERIFICAÇÃO CARACTERES INVALIDOS 
             
-        ## ANALISA O FORMATO DO CPF, E SE NECESSARIO FORMATA PARA APENAS NUMEROS
-        if not cpf.isdigit():
-            if len(cpf) != 14: # Precisa possuir a estrutura 000.000.000-00 aqui
-                if justify:
-                    print('Formato do CPF é inválido.')
-                return False
-            ## FORMATA CPF PARA A OTIMIZAÇAO DO RESTANTE DA VERIFICAÇÃO
-            if cpf[3]== '.' and cpf[7]== '.' and cpf[11]== '-': 
-                cpf = cpf.replace('.', '').replace('-','') # Cria nova variável exclusiva para a verificação, sem modificar a original
-            else:
-                if justify:
-                    print('Formato do CPF é inválido.')
-                return False
-            
-        ## VERIFICA QUANTIDADE CHAR
-        if len(cpf) != 11:
-            if justify:
-                print('Um CPF válido deve ter 11 digitos (Não inclui caracteres especiais: . e -).')
-            return False 
+        if len(cpf) != 11: return False  ## VERIFICA QUANTIDADE CHAR
         
-        if cpf in ["00000000000", "11111111111", "22222222222", "33333333333", "44444444444", "55555555555", "66666666666", "77777777777", "88888888888", "99999999999"]:
-            if justify:
-                print('CPF inválido. Um CPF válido não pode ser composto por números repetidos.')
-            return False
+        if cpf in ["00000000000", "11111111111", "22222222222", "33333333333", "44444444444", "55555555555", "66666666666", "77777777777", "88888888888", "99999999999"]: return False ## VERIFICA PREVIAMENTE CPFs INVÁLIDOS
 
-        ## DIVIDE O CPF EM PARTES PARA REALIZAR O CALCULO
-        verificadores = list(cpf[9:])
-        numeros_calculo = list(cpf[:9])
-        comparador_0 = self.__calcular_comparador(numeros_calculo)
-        ## VERIFICA SE OS COMPARADORES SAO IGUAIS OS NUMEROS VERIFICADORES
-        if comparador_0 == int(verificadores[0]):
-            numeros_calculo.append(comparador_0)
-        else:
-            if justify:
-                print('O primeiro digito verificador não condiz. Verifique se o CPF foi digitado corretamente.')
-            return False
+        ## DIVIDE O CPF EM PARTES PARA REALIZAR O CÁLCULO
+        verificadores, numeros_calculo = list(cpf[9:]), list(cpf[:9])
+        comparador_0  =self.__calcular_comparador(numeros_calculo) 
         
-        
+        if not comparador_0 == int(verificadores[0]): return False ## VERIFICA SE OS COMPARADORES SÃO IGUAIS OS NUMEROS VERIFICADORES
+
+        numeros_calculo.append(comparador_0)
         comparador_1 = self.__calcular_comparador(numeros_calculo)
         
-        if comparador_1 == int(verificadores[1]):
-            numeros_calculo.append(comparador_1)
-        else:
-            if justify:
-                print('O segundo digito verificador não condiz. Verifique se o CPF foi digitado corretamente.')
-            return False
-
-        if justify:
-            print(f'Tudo certo com o CPF: {self.formatar_cpf(cpf=cpf)}')
+        if not comparador_1 == int(verificadores[1]): return False
+        
+        numeros_calculo.append(comparador_1) ## NUMEROS CALCULO = CPF
+        
         return True
 
-    def estado_emitido(self, cpf: str =None, siglas: bool = True):
-        if cpf == None:
-            cpf = self.cpf
-        ## Verifica o CPF, caso seja inválido retorna None
-        if not self.verificar_cpf(cpf):
-            return None
-        
-        ## Formata o CPF para verificar o estado de forma mais otimizada
-        if not cpf.isdigit():
-            cpf = cpf.replace('.', '').replace('-','')
+    def estado_emitido(self, cpf: str =None, siglas: bool = True) ->list:
 
-        # Estados
+        cpf = self.__clear_cpf(cpf or self.cpf)
+
+        if not self.verificar_cpf(cpf): return None ## VERIFICA CPF
+
         if siglas:
             estados = {
                 '1': ['DF', 'GO', 'MS', 'MT', 'TO'],
@@ -129,26 +88,23 @@ class CPFValida:
                 '0': ['Rio Grande do Sul'],
             }
 
-        return estados.get(cpf[8])
-
+        digito_verificador = cpf[8] ## DIGITO QUE ARMAZENA O CPF
+        return estados.get(digito_verificador)
 
     def formatar_cpf(self, cpf: str = None):
-        if cpf == None:
-            cpf = self.cpf
-        if cpf.isdigit():
-            if self.verificar_cpf(cpf):
-                format_cpf = f'{cpf[:3]}.{cpf[3: 6:]}.{cpf[6: 9:]}-{cpf[9:]}'
-                return format_cpf
-            else:
-                return None
-        else:
-            if self.verificar_cpf():
-                return cpf
-            else:
-                return None
-    
+        cpf = self.__clear_cpf(cpf or self.cpf)
+
+        if len(cpf) == 11 and cpf.isdigit():
+            cpf_formatado = f'{cpf[:3]}.{cpf[3: 6:]}.{cpf[6: 9:]}-{cpf[9:]}'
+            return cpf_formatado
+        else: 
+            return None
+
     @staticmethod
     def __calcular_comparador(numeros_calculo):
         soma_total = sum(int(d) * (len(numeros_calculo) + 1 - i) for i, d in enumerate(numeros_calculo))
         comparador = 11 - soma_total % 11
         return 0 if comparador in [10, 11] else comparador
+    @staticmethod
+    def __clear_cpf(cpf: str):
+        return cpf.replace('-', '').replace('.', '')

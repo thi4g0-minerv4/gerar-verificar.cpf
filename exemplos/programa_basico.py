@@ -5,22 +5,21 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.
 from CPFValidaClass import CPFValida
 ## Importação da classe----
 
-
 def questionario():
 
     cpf_user = input('Digite seu CPF no terminal:   ')
 
-    cpf_user_validate = CPFValida(cpf_user)
+    cpf_user = CPFValida(cpf_user)
 
-    if cpf_user_validate.verificar_cpf(justify=False):
+    if cpf_user.verificar_cpf():
         pass
     else:
         print('CPF inválido, reenvie seu CPF\n')
         questionario()
         return
 
-    estados_sigla= cpf_user_validate.estado_emitido(siglas=True)
-    estados_nome= cpf_user_validate.estado_emitido(siglas=False)
+    estados_sigla= cpf_user.estado_emitido(siglas=True)
+    estados_nome= cpf_user.estado_emitido(siglas=False)
     if len(estados_sigla) <=1:
         input(f'CPF válido. Você é de {estados_sigla[0]}, não é?  ')
         print('Legal!')

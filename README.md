@@ -10,8 +10,8 @@ Classe CPFValida, que realiza: <strong>Validação</strong>, <strong>Geração</
 ### Utilidades Gerais ⚙️
 <ul>
     <li>Verificar validade de qualquer CPF.</li>
-    <li>Invalida CPF's como 111.111.111-11 e 222.222.222-22.</li>
-    <li>Pode gerar milhões CPF's de forma otimizada.</li>
+    <li>Invalida CPFs como 111.111.111-11 e 222.222.222-22.</li>
+    <li>Pode gerar milhões CPFs de forma otimizada.</li>
     <li>Busca o estado de emissão do CPF.</li>
     <li>Formata qualquer CPF para forma padrão.</li>
     <li>Facilita no uso da API da Receita Federal.</li>
@@ -49,8 +49,9 @@ Os atributos são gerados automaticamente pelo método construtor.
 Os atributos refletem informações que podem ser obtidas pelos metódos da classe.
 Caso o parametro cpf não seja passado retornam ```None```.
 #
-<strong>```self.cpf```:</strong> Recebe o valor do CPF passado (```str```) <br>
-<strong>```self.cpf_formated```:</strong> Armazena o CPF formatado (```str```). Caso o CPF seja inválido recebe o valor ```None```<br>
+<strong>```self.cpf_input```:</strong> Recebe o valor do CPF passado (```str```) <br>
+<strong>```self.cpf```:</strong> Recebe o valor do CPF 100% númerico(```str```) <br>
+<strong>```self.cpf_formatado```:</strong> Armazena o CPF formatado (```str```). Caso o CPF tenha chars inválidos ou mais/menos chars do que o padrão será ```None```<br>
 <strong>```self.cpf_valido```:</strong> Se o CPF é válido ou não (```bool```)<br>
 <strong>```self.estados```:</strong> Array com os possíveis estados de emissão (```list```). Caso o CPF seja inválido recebe o valor ```None```<br><br>
 
@@ -71,27 +72,26 @@ Formata CPF para forma padrão.
 """
 formatar_cpf(cpf: str) -> str 
 
--cpf (str): CPF a ser formatado (Só aceita CPF's válidos. Padrão: self.cpf).
+-cpf (str): CPF a ser formatado (Padrão: self.cpf).
 """
 cpf = '56008293703'
 print(cpf_tool.formatar_cpf(cpf)) # 560.082.937-03
 
 ```
 <br>
-<strong>Método <code>verificar_cpf(cpf: str, justify: bool)</code>:</strong>
+<strong>Método <code>verificar_cpf(cpf: str)</code>:</strong>
 
 
 Verifica se o CPF é válido, retornando True ou False
 ```bash
 # --- método: verificar_cpf() ---
 """
-verificar_cpf(cpf: str, justify: bool = False) -> bool
+verificar_cpf(cpf: str) -> bool
 
 -cpf (str): CPF a ser verificado (Padrão: self.cpf).
--justify (bool): Se True, retorna a justificativa da validade/invalidez. (Padrão: False.)
 """
 cpf = '54705438892'
-if cpf_tool.verificar_cpf(cpf=cpf, justify=True):
+if cpf_tool.verificar_cpf(cpf=cpf):
     print(f'CPF {cpf_tool.formatar_cpf(cpf)} válido')
 else:
     print(f'CPF {cpf_tool.formatar_cpf(cpf)} inválido')
@@ -137,4 +137,13 @@ print(f'O CPF gerado é válido? {cpf_tool.verificar_cpf(cpf=novo_cpf)}')  # Sem
 
 #
 
-### Funcionamento 🤷‍♂️
+## Atualização v3.0 ✅ - Primeira Versão Oficial
+<br>
+
+- **Melhoria geral do código:** mais legível, enxuto e seguindo o princípio DRY.
+<br>
+
+- **Otimização do método `gerar_cpf()`:** agora gera apenas os 9 primeiros dígitos e calcula os dois últimos, eliminando o processo lento de tentativa e erro.
+<br>
+
+- **Processamento baseado apenas no CPF numérico:** toda lógica agora utiliza o atributo `cpf` puro (somente números), o que torna a execução mais rápida e tolerante a CPFs mal formatados, como `276..830.630---45` (ainda válidos após limpeza).
